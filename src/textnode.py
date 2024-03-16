@@ -1,12 +1,17 @@
-#define class
+text_type_text = "text"
+text_type_bold = "bold"
+text_type_italic = "italic"
+text_type_code = "code"
+text_type_link = "link"
+text_type_image = "image"
+
+
 class TextNode:
-    # initial contructor with instance variables
     def __init__(self, text, text_type, url=None):
         self.text = text
         self.text_type = text_type
         self.url = url
 
-    # eq method to test id two objects are equal
     def __eq__(self, other):
         return (
             self.text_type == other.text_type
@@ -14,6 +19,5 @@ class TextNode:
             and self.url == other.url
         )
 
-    # string representation method
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type}, {self.url})"

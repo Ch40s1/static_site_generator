@@ -1,46 +1,46 @@
-# import unittest from python library
 import unittest
 
-# import the class we are testig
-from textnode import TextNode
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+)
 
 
 class TestTextNode(unittest.TestCase):
-    # create two textnode objects with the same properties and asserts that they are equal
     def test_eq(self):
-        node = TextNode('This is a text node', "bold")
-        node2 = TextNode("This is a text node", "bold")
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node", text_type_text)
         self.assertEqual(node, node2)
 
-    def test_not_eq_different_text(self):
-        # Test inequality when text is different
-        node = TextNode('This is a text node', "bold")
-        node2 = TextNode("This is another text node", "bold")
+    def test_eq_false(self):
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node", text_type_bold)
         self.assertNotEqual(node, node2)
 
-    def test_not_eq_different_type(self):
-        # Test inequality when text_type is different
-        node = TextNode('This is a text node', "bold")
-        node2 = TextNode("This is a text node", "italic")
+    def test_eq_false2(self):
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node2", text_type_text)
         self.assertNotEqual(node, node2)
 
-    def test_not_eq_none_url(self):
-        # Test inequality when url is None for one object
-        node = TextNode('This is a text node', "bold", "http://example.com")
-        node2 = TextNode("This is a text node", "bold", None)
-        self.assertNotEqual(node, node2)
-
-    def test_eq_same_url(self):
-        # Test equality when urls are the same
-        node = TextNode('This is a text node', "bold", "http://example.com")
-        node2 = TextNode("This is a text node", "bold", "http://example.com")
+    def test_eq_url(self):
+        node = TextNode("This is a text node",
+                        text_type_italic, "https://www.boot.dev")
+        node2 = TextNode(
+            "This is a text node", text_type_italic, "https://www.boot.dev"
+        )
         self.assertEqual(node, node2)
 
-    def test_not_eq_different_url(self):
-        # Test inequality when urls are different
-        node = TextNode('This is a text node', "bold", "http://example.com")
-        node2 = TextNode("This is a text node", "bold", "http://another-example.com")
-        self.assertNotEqual(node, node2)
+    def test_repr(self):
+        node = TextNode("This is a text node", text_type_text,
+                        "https://www.boot.dev")
+        self.assertEqual(
+            "TextNode(This is a text node, text, https://www.boot.dev)", repr(node)
+        )
 
 
 if __name__ == "__main__":
