@@ -1,5 +1,6 @@
 import unittest
 
+from htmlnode import LEAFNODE
 from textnode import (
     TextNode,
     text_type_text,
@@ -8,6 +9,7 @@ from textnode import (
     text_type_code,
     text_type_image,
     text_type_link,
+    text_node_to_html_node
 )
 
 
