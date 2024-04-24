@@ -29,4 +29,12 @@ def copy_files_recursive(source_dir_path, dest_dir_path):
             copy_files_recursive(from_path, dest_path)
 
 
+def generate_page(from_path, template_path, dest_path):
+    pass
+
+
+def extract_file(markdown):
+    pass
+
+
 main()
