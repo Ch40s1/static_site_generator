@@ -14,46 +14,54 @@ block_type_ulist = "unordered_list"
 
 
 def markdown_to_blocks(markdown):
-    blocks_list = []
-    # loop through lines in section  with split
-    for line in markdown.split("\n\n"):
-        # figure out if line is empty
-        if line == "":
-            # if it is continue to next part
+    blocks = markdown.split("\n\n")
+    filtered_blocks = []
+    for block in blocks:
+        if block == "":
             continue
-        # append the current block to list
-        line = line.strip()
-        # else add line to current block
-        blocks_list.append(line)
-    # return the list
-    return blocks_list
+        block = block.strip()
+        filtered_blocks.append(block)
+    return filtered_blocks
 
 
 def block_to_block_type(block):
     lines = block.split("\n")
 
-    # Check for heading
-    if block.startswith("# "):
+    if (
+        block.startswith("# ")
+        or block.startswith("## ")
+        or block.startswith("### ")
+        or block.startswith("#### ")
+        or block.startswith("##### ")
+        or block.startswith("###### ")
+    ):
         return block_type_heading
-
-    # Check for code block
-    if len(lines) > 2 and lines[0].startswith("```") and lines[-1].startswith("```"):
+    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return block_type_code
-
-    # Check for quote
     if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return block_type_paragraph
         return block_type_quote
-
-    # Check for unordered list
-    if any(line.startswith("- ") for line in lines):
+    if block.startswith("* "):
+        for line in lines:
+            if not line.startswith("* "):
+                return block_type_paragraph
         return block_type_ulist
-
-    # Check for ordered list
-    if any(line.startswith(f"{i}. ") for i, line in enumerate(lines, start=1)):
+    if block.startswith("- "):
+        for line in lines:
+            if not line.startswith("- "):
+                return block_type_paragraph
+        return block_type_ulist
+    if block.startswith("1. "):
+        i = 1
+        for line in lines:
+            if not line.startswith(f"{i}. "):
+                return block_type_paragraph
+            i += 1
         return block_type_olist
-
-    # Default to paragraph
     return block_type_paragraph
+
 
 
 def markdown_to_html(markdown):
@@ -64,11 +72,11 @@ def markdown_to_html(markdown):
     # loop over
     for block in blocks:
         # html node var is called to determine the type of block
-        html_node = block_to_block_type(block)
+        html_node = block_to_html_node(block)
         # append to children list after formatted
         children.append(html_node)
     # return ParentNode
-    return ParentNode("div", children)
+    return ParentNode("div", children, None)
 
 
 def block_to_html_node(block):
@@ -133,7 +141,7 @@ def quote_to_html_node(block):
     lines = block.split("\n")
     new_line = []
     for line in lines:
-        if not line.startwith(">"):
+        if not line.startswith(">"):
             raise ValueError("Invalid quote block")
         new_line.append(line.lstrip(">").strip())
     content = " ".join(new_line)
@@ -155,7 +163,7 @@ def ulist_to_html_node(block):
     items = block.split("\n")
     html_items = []
     for item in items:
-        text = item[3:]
+        text = item[2:]
         children = text_to_children(text)
         html_items.append(ParentNode("li", children))
     return ParentNode("ul", html_items)
